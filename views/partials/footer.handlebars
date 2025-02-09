@@ -1,0 +1,17 @@
+<script>
+/**
+ * Auto-grab local system time as a poor-man's NTP client
+ * The date compares your local system time with the server time
+ * If the difference is greater than 5 minutes, it will sync the time
+ * and refresh the page to get the updated server time
+ */
+document.addEventListener('load', async () => {
+    if (Math.abs(Date.now() - new Date('{{serverTimeISO}}')) > 300000) { // 5 minutes in milliseconds
+        try {
+            const clientTime = Date.now();
+            const res = await fetch('/ntp/sync-time', { method: 'POST', headers: { 'Content-Type': 'application/json', 'X-Client-Time': clientTime }, body: JSON.stringify({ clientTime: new Date(clientTime).toISOString() }) });
+            if (res.ok && (await res.json()).corrected) location.reload();
+        } catch (e) { console.warn('Time sync error:', e) }
+    }
+});
+</script>

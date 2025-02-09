@@ -1,0 +1,93 @@
+{
+  "name": "center splash",
+  "description": "",
+  "timeline": [
+    {
+      "type": "FadeIn",
+      "at": 0,
+      "options": {
+        "duration": 1000,
+        "start": 0,
+        "end": 4095,
+        "brightness": 0,
+        "shifts": 2,
+        "bouncing": false,
+        "bounceAfter": 0,
+        "leds[8]": "8",
+        "leds[9]": "9",
+        "leds": [
+          8,
+          9
+        ]
+      }
+    },
+    {
+      "type": "Shifting",
+      "startTime": 1000,
+      "at": 1000,
+      "options": {
+        "duration": 5000,
+        "start": 0,
+        "end": 4095,
+        "brightness": 2048,
+        "shifts": 7,
+        "direction": "down",
+        "bouncing": false,
+        "bounceAfter": 0,
+        "leds[1]": "1",
+        "leds[2]": "2",
+        "leds[3]": "3",
+        "leds[4]": "4",
+        "leds[5]": "5",
+        "leds[6]": "6",
+        "leds[7]": "7",
+        "leds[8]": "8",
+        "leds": [
+          8,
+          7,
+          6,
+          5,
+          4,
+          3,
+          2,
+          1
+        ]
+      }
+    },
+    {
+      "type": "Shifting",
+      "startTime": 1000,
+      "at": 1000,
+      "options": {
+        "duration": 5000,
+        "start": 0,
+        "end": 4095,
+        "brightness": 2048,
+        "shifts": 8,
+        "direction": "down",
+        "bouncing": false,
+        "bounceAfter": 0,
+        "leds[9]": "9",
+        "leds[10]": "10",
+        "leds[11]": "11",
+        "leds[12]": "12",
+        "leds[13]": "13",
+        "leds[14]": "14",
+        "leds[15]": "15",
+        "leds[16]": "16",
+        "leds[17]": "17",
+        "leds": [
+          9,
+          10,
+          11,
+          12,
+          13,
+          14,
+          15,
+          16,
+          17
+        ]
+      }
+    }
+  ]
+}

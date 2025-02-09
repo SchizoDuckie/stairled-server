@@ -1,0 +1,4 @@
+.vscode
+node_modules/
+node_modules/i2c
+node_modules/sleep

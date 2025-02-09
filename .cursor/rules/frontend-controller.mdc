@@ -1,0 +1,104 @@
+---
+description: Frontend Controller Rules for creating consistent, maintainable frontend JavaScript controllers
+globs: *.js
+---
+rules:
+  - name: Controller Class Structure
+    pattern: "class\\s+\\w+Controller"
+    requirements:
+      - Must use class-based organization
+      - Must initialize in document.ready
+      - Must bind to window object for global access
+      - Must declare updateInterval and other state in constructor
+      - Must separate event binding from logic
+
+  - name: Event Binding
+    pattern: "initialize\\w*Listeners"
+    requirements:
+      - Must use $(document).on for all event bindings
+      - Must bind class methods with .bind(this)
+      - Must namespace events where appropriate
+      - Must group related event bindings together
+      - No inline event handlers
+
+  - name: Update Cycles
+    pattern: "initialize\\w*Updates"
+    requirements:
+      - Must clear existing intervals before setting new ones
+      - Must store interval IDs for cleanup
+      - Must specify update frequency in comments
+      - Must handle failed updates gracefully
+
+  - name: Error Handling
+    pattern: "(catch|error).*{"
+    requirements:
+      - Must log errors to console with context
+      - Must show user-friendly error messages
+      - Must handle network timeouts
+      - Must preserve form data on failure
+      - Must allow retry where appropriate
+
+  - name: UI Feedback
+    pattern: "show\\w*(Alert|Message|Notification)"
+    requirements:
+      - Must support success/warning/error types
+      - Must auto-dismiss after reasonable timeout
+      - Must be dismissible manually
+      - Must stack multiple messages appropriately
+      - Must handle HTML content safely
+
+example: |
+  /**
+   * Manages form submissions and real-time updates
+   * Handles error states and user feedback
+   * Maintains update cycles for live data
+   * Provides consistent alert messaging
+   */
+  class ExampleController {
+    constructor() {
+      this.updateInterval = null;
+      this.initializeEventListeners();
+      this.initializeUpdates();
+    }
+
+    /**
+     * Binds all event handlers using delegation
+     * Groups listeners by functionality
+     * Uses namespaced events for cleanup
+     * Preserves this context for all handlers
+     */
+    initializeEventListeners() {
+      $(document).on('click', '.selector', this.handleClick.bind(this));
+      $(document).on('submit', '#form-id', this.handleSubmit.bind(this));
+    }
+
+    /**
+     * Processes form submission asynchronously
+     * Preserves form data on failure
+     * Shows user feedback for all states
+     * Logs errors with full context
+     */
+    async handleSubmit(e) {
+      e.preventDefault();
+      try {
+        // ... implementation
+      } catch (err) {
+        console.error('Context:', err);
+        this.showAlert('error', 'User friendly message');
+      }
+    }
+
+    /**
+     * Displays temporary alert messages
+     * Supports success/warning/error states
+     * Auto-dismisses after 5 seconds
+     * Stacks multiple alerts vertically
+     */
+    showAlert(type, message) {
+      // ... implementation
+    }
+  }
+
+  $(document).ready(() => {
+    window.exampleController = new ExampleController();
+  }); 

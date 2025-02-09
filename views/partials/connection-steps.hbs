@@ -1,0 +1,17 @@
+<div class="alert alert-{{#if isAPMode}}warning{{else}}info{{/if}}">
+    <h5>System Status:</h5>
+    <div class="phases">
+        {{#if isAPMode}}
+        <div class="phase {{#if (lt countdown 1)}}active{{/if}}">
+            <i class="fas fa-spinner fa-spin"></i>
+            <span>Initializing hardware...</span>
+        </div>
+        <div class="phase {{#if (gte countdown 0)}}active{{/if}}">
+            <i class="fas fa-network-wired"></i>
+            <span>Network interface coming online...</span>
+        </div>
+        {{else}}
+        <!-- Client mode steps -->
+        {{/if}}
+    </div>
+</div> 

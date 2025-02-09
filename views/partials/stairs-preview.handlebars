@@ -1,0 +1,29 @@
+<div class="col-md-6">
+    <div class="card shadow preview" style="height: 95vh">
+        <div class="card-header">
+            <p class="text-primary text-strong mb-0">🪜 3D Staircase Preview</p>
+        </div>
+        <div class="card-body">
+            <div class="preview-container">
+                <div class="sidewall"></div>
+                <div class="handrail">
+                    <div class="wall-mount"></div>
+                    <div class="wall-mount"></div>
+                </div>
+                <div class="staircase">
+                    {{#each pinMapping}}
+                    <div class="step">
+                        <div class="kickboard">
+                            <div class="led-preview" data-driver="{{driver}}" data-pin="{{pin}}" data-step="{{step}}">
+                                <span class="step-number">{{step}}</span>
+                            </div>
+                            <div class="led-hiding-trim-strip"></div>
+                        </div>
+                        <div class="stepsurface"></div>
+                    </div>
+                    {{/each}}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

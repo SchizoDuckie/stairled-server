@@ -1,0 +1,13 @@
+{
+  "mqtt": {
+    "enabled": true,
+    "hostname": "localhost",
+    "channel": "sensors"
+  },
+  "pinmapper": {
+    "discoveredDevices": [
+      "0x40",
+      "0x41"
+    ]
+  }
+}

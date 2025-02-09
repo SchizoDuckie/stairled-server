@@ -1,0 +1,197 @@
+/* public/css/stairspreview.css */
+:root {
+    --step-height: 20px; /* Height of each step */
+    --step-depth: 20px; /* Depth (Z-axis offset) of each step */
+    --step-width: 80px; /* Width of each step */
+    --total-steps: 21; /* Total number of steps */
+}
+
+.card.preview {
+    height: 100%;
+    perspective: 200px;
+    overflow: hidden;
+}
+
+.preview .card-body {
+    overflow: hidden;
+}
+
+.preview-container {
+    position: relative;
+    width: 100%;
+    height: 400px;
+    transform-style: preserve-3d;
+    transform: rotateX(346deg) rotateY(21deg);
+    user-select: none;
+    cursor: grab;
+    zoom: 1.5;
+}
+
+.sidewall {
+    position: absolute;
+    width: 1000px;
+    height: 400px;
+    background-color: #1e1e1e;
+    left: 0;
+    top: 0;
+    margin-left: 50px;
+    transform: translateX(-410px) rotateY(-90deg) translateY(-2px) scale(1.5);
+}
+
+.staircase {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    transform-style: preserve-3d;
+}
+
+.handrail {
+    position: absolute;
+    width: 4px;
+    height: 100%;
+    background-color: #2259cf;
+    left: 40px;
+    top: -28px;
+    transform: translateZ(316px) rotateX(45deg) translateX(96px) translateY(-124px) translateZ(0px) rotateY(90deg) scaleY(1.5);
+}
+
+.wall-mount {
+    position: absolute;
+    width: 10px;
+    height: 20px;
+    background-color: #555;
+    top: 0;
+    transform: translateZ(20px);
+}
+
+.wall-mount:nth-child(1) {
+    left: 0;
+}
+
+.wall-mount:nth-child(2) {
+    left: 100%;
+    transform: translateX(-10px) translateZ(20px);
+}
+
+.step {
+    position: absolute;
+    width: var(--step-width);
+    height: var(--step-height);
+    background-color: #ddd;
+    transform-style: preserve-3d;
+}
+
+/* Adjust step positioning to start from the bottom */
+.step:nth-child(n) {
+    --step-index: var(--n); /* Use --n directly for step index */
+    top: calc(100% - var(--step-height) * var(--step-index)); /* Start from the bottom */
+    left: 60px;
+    transform: translateZ(calc(var(--step-depth) * (var(--total-steps) - var(--step-index)))); /* Adjust depth */
+}
+
+/* Automatically assign --n for each step */
+.step:nth-child(1) { --n: 1; }
+.step:nth-child(2) { --n: 2; }
+.step:nth-child(3) { --n: 3; }
+.step:nth-child(4) { --n: 4; }
+.step:nth-child(5) { --n: 5; }
+.step:nth-child(6) { --n: 6; }
+.step:nth-child(7) { --n: 7; }
+.step:nth-child(8) { --n: 8; }
+.step:nth-child(9) { --n: 9; }
+.step:nth-child(10) { --n: 10; }
+.step:nth-child(11) { --n: 11; }
+.step:nth-child(12) { --n: 12; }
+.step:nth-child(13) { --n: 13; }
+.step:nth-child(14) { --n: 14; }
+.step:nth-child(15) { --n: 15; }
+.step:nth-child(16) { --n: 16; }
+.step:nth-child(17) { --n: 17; }
+.step:nth-child(18) { --n: 18; }
+.step:nth-child(19) { --n: 19; }
+.step:nth-child(20) { --n: 20; }
+.step:nth-child(21) { --n: 21; }
+
+.step::before {
+    content: "";
+    position: absolute;
+    width: 20px; /* Width of the wall segment */
+    height: calc(var(--step-height) * var(--step-index)); /* Extend to the floor */
+    background-color: #333333cc; /* Match the sidewall color */
+    top: 0;
+    transform-origin: left;
+    transform: rotateY(-90deg) translateX(-20px);
+}
+
+.kickboard {
+    position: absolute;
+    width: 100%;
+    height: 17px;
+    background-color: #535353;
+    bottom: 0;
+    transform: translateZ(0px);
+}
+
+.led-hiding-trim-strip {
+    position: absolute;
+    width: 100%;
+    height: 5px;
+    background-color: #2259cf;
+    bottom: 15px;
+}
+
+.led-preview {
+    position: absolute;
+    width: 90%; /* Adjust width to fit behind the trim strip */
+    height: 3px; /* Thickness of the LED strip */
+    background-color: #ff0; /* Base color of the LED strip */
+    border-radius: 2px; /* Slightly rounded edges */
+    bottom: 15px; /* Align with the trim strip */
+    left: 50%;
+    transform: translateX(-50%) translateZ(5px);
+}
+
+.led-preview.on {
+    box-shadow: -1px 4px 3px 2px rgb(255 247 0 / 80%);
+}
+
+.stepsurface {
+    position: absolute;
+    width: 98%;
+    height: 21px; /* Adjust height as needed */
+    background-color: #1f61efd1;
+    top: -11px;
+    transform: rotateX(90deg) translateZ(calc(var(--step-height) / 2)); /* Rotate and position */
+    transform-origin: bottom; /* Ensure rotation aligns with the step */
+}
+
+.step-number {
+    position: absolute;
+    bottom: -15px;
+    left: 50%;
+    transform: translateX(-50%);
+    font-size: 10px;
+    font-family: verdana;
+    color: #000;
+}
+
+.step-checkboxes::-webkit-scrollbar {
+    width: 8px;
+}
+
+.step-checkboxes::-webkit-scrollbar-track {
+    background: #f1f1f1;
+}
+
+.step-checkboxes::-webkit-scrollbar-thumb {
+    background: #888;
+    border-radius: 4px;
+}
+
+.step-checkboxes::-webkit-scrollbar-thumb:hover {
+    background: #555;
+}
+
+.form-check-label small {
+    font-size: 0.8em;
+}

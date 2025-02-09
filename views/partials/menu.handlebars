@@ -1,0 +1,37 @@
+<ul class="nav nav-pills flex-column mb-sm-auto mb-0 align-items-center align-items-sm-start" id="menu">
+    <li class="nav-item">
+        <a href="/dashboard" class="nav-link align-middle px-0">
+            <i class="fas fa-tachometer-alt"></i> <span class="ms-1 d-none d-sm-inline">Dashboard</span>
+        </a>
+    </li>
+    <li>
+        <a href="#submenu1" data-bs-toggle="collapse" class="nav-link px-0 align-middle">
+            <i class="fas fa-cogs"></i> <span class="ms-1 d-none d-sm-inline">Settings</span>
+        </a>
+        <ul class="nav flex-column ms-1" id="submenu1" data-bs-parent="#menu">
+            <li class="w-100">
+                <a href="/wifi" class="nav-link px-2"> <i class="fas fa-wifi"></i> <span class="d-none d-sm-inline">Wifi</span></a>
+            </li>
+            <li>
+                <a href="/pca9685" class="nav-link px-2"> <i class="fas fa-microchip"></i> <span class="d-none d-sm-inline">PCA9685 Pin mappings</span></a>
+            </li>
+            <li>
+                <a href="/sensors" class="nav-link px-2"> <i class="fas fa-wifi" style="transform: rotateZ(90deg);"></i> <span class="d-none d-sm-inline">Trigger Sensors</span></a>
+            </li>
+            <li>
+                <a href="/effects" class="nav-link px-2"> <i class="far fa-lightbulb"></i> <span class="d-none d-sm-inline">LED Effects</span></a>
+            </li>
+            <li>
+                <a href="/ntp" class="nav-link px-2"> <i class="far fa-clock"></i> <span class="d-none d-sm-inline">NTP & Off Times</span></a>
+            </li>
+            <li>
+                <a href="/mqtt" class="nav-link px-2"> <i class="fas fa-microchip"></i> <span class="d-none d-sm-inline">MQTT</span></a>
+            </li>
+        </ul>
+    </li>
+    <li>
+        <a href="/about" class="nav-link px-0 align-middle">
+            <i class="fas fa-info-circle"></i> <span class="ms-1 d-none d-sm-inline">About</span>
+        </a>
+    </li>
+</ul>

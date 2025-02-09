@@ -1,0 +1,178 @@
+<!-- effects.handlebars -->
+<div class="row">
+    <div class="col-md-6">
+        <div class="card shadow mb-4">
+            <div class="card-header py-3 d-flex align-items-center">
+                <p class="mb-0 text-primary text-strong">
+                    <i class="fa fa-lightbulb"></i>&nbsp;LED Effects
+                </p>
+            </div>
+            <div class="card-body">
+                <form id="effectsForm">
+                    <!-- Animation Selection -->
+                    <div class="form-group mb-4">
+                        <label for="animationSelect" class="form-label fw-bold">Select Animation</label>
+                        <div class="input-group">
+                            <select class="form-select" id="animationSelect" name="animationName">
+                                <option value="">Select an animation to load</option>
+                                {{#each animations}}
+                                <option value="{{this.key}}" 
+                                        data-description="{{this.description}}"
+                                        {{#if (eq ../currentAnimation.name this.key)}}selected{{/if}}>
+                                    {{this.name}} - {{this.description}}
+                                </option>
+                                {{/each}}
+                            </select>
+                            <button class="btn btn-outline-success" id="createNewAnimation" type="button"><i class="fa fa-plus"></i>
+                            </button>
+                            <button class="btn btn-trash btn-outline-danger" id="deleteAnimation" type="button"><i class="fa fa-trash"></i>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Timeline Configuration -->
+                    {{#with currentAnimation}}
+                    <div class="card mb-4 border-primary">
+                        <div class="card-header">
+                            <p class="text-primary text-strong mb-0">
+                                <i class="fas fa-stream me-2"></i>Animation Timeline
+                                <button type="button" style="position: absolute; margin-right: 5px; margin-top:-2px; right: 0;" class="btn btn-sm btn-dark ms-2 btn-outline-success" id="addTimelineItem">
+                                    <i class="fas fa-plus me-2"></i>Add Item
+                                </button>
+                             </p>
+                        </div>
+                        <div class="card-body p-0">
+                            <div class="timeline-container">
+                                <div class="timeline-scroll">
+                                    <div class="timeline-header d-flex text-muted px-2 py-1 border-bottom">
+                                        <div class="list-group-item col-1"><strong>Drag</strong></div>
+                                        <div class="list-group-item col-2"><strong>Type</strong></div>
+                                        <div class="list-group-item col-3"><strong>Start Time</strong></div>
+                                        <div class="list-group-item col-4"><strong>Duration</strong></div>
+                                        <div class="list-group-item col-5"><strong>Actions</strong></div>
+                                    </div>
+                                    <div class="timeline-axis"></div>
+                                    <div class="timeline-bars list-group list-group-flush" id="timelineBars">
+                                        {{#each timeline}}
+                                        {{> timeline-item-template
+                                        availableSteps=../availableSteps }}
+                                        {{/each}}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="card-footer">
+                            <div class="form-check form-check-inline">
+                                <input class="form-check-input" type="checkbox" id="autorecalculateCheckbox">
+                                <label class="form-check-label" for="autorecalculateCheckbox">Disable auto-recalculate</label>
+                            </div>
+                        </div>
+                    </div>
+                    {{/with}}
+                    
+                    <div class="card mb-4 border-primary" style="display:none">
+                        <!-- not sure this actually does anything visually for just the fade -->
+                        Animation timing: <select class="form-select" id="easingSelect" style="width: auto;">
+                            <option value="linear">linear</option>
+                            <option value="easeInBack">easeInBack</option>
+                            <option value="easeOutBack">easeOutBack</option>
+                            <option value="easeInOutBack">easeInOutBack</option>
+                            <option value="easeInElastic">easeInElastic</option>
+                            <option value="easeOutElastic">easeOutElastic</option>
+                            <option value="easeInOutElastic">easeInOutElastic</option>
+                            <option value="easeInBounce">easeInBounce</option>
+                            <option value="easeOutBounce">easeOutBounce</option>
+                            <option value="easeInOutBounce">easeInOutBounce</option>
+                        </select>
+
+                    </div>
+                    <!-- Action Buttons -->
+                    <div class="btn-group mb-4">
+                        <button class="btn btn-outline-primary" type="submit">
+                            <i class="fa fa-save"></i> Save Configuration
+                        </button>
+                        <button class="btn btn-outline-success" type="button" id="previewBrowserButton">
+                            <i class="fa fa-desktop"></i> Browser Preview
+                        </button>
+                        <button class="btn btn-outline-info" type="button" id="previewHardwareButton">
+                            <i class="fa fa-microchip"></i> Hardware Preview
+
+                        </button>
+                        <button class="btn btn-outline-warning" type="button" id="stopAnimationButton">
+                            <i class="fa fa-stop"></i> Stop
+                        </button>
+                        <button class="btn btn-outline-danger" type="button" id="clearAnimationButton">
+                            <i class="fa fa-power-off"></i> All LEDs Off
+
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    {{> stairs-preview }}
+</div>
+
+<!-- Link to the extracted CSS -->
+<link rel="stylesheet" href="/css/stairspreview.css">
+<script type="text/javascript">
+    // Proper animation timing polyfill
+    window.setImmediate = (fn) => setTimeout(fn, 0);
+    window.clearImmediate = clearTimeout;
+
+    window.pinMappingData = {{{ json pinMapping }}};
+    window.animationTypes = {{{ json animationTypes }}};
+    console.log('Animation types loaded:', window.animationTypes);
+</script>
+
+<script src="/js/Sortable.min.js"></script>
+<script src="/js/stairs-preview.js"></script>
+<script src="/js/animations/index.js" type="module"></script>
+<script src="/js/animationengine/LedstripAnimation.js" type="module"></script>
+   
+<script id="timeline-item-template" type="text/x-handlebars-template">
+    {{{includeRaw 'timeline-item-template'}}}
+</script>
+
+<script id="timeline-items-modal" type="text/x-handlebars-template">
+    {{{includeRaw 'timeline-items-modal' }}}
+</script>
+
+<script id="create-animation-modal" type="text/x-handlebars-template">
+<div class="modal fade" id="createAnimationModal" tabindex="-1">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header text-white">
+        <h5 class="modal-title"><i class="fa fa-lightbulb me-2"></i>Create New Animation</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+      </div>
+      <form id="createAnimationForm">
+        <div class="modal-body">
+          <div class="mb-3">
+            <label class="form-label">Animation Name</label>
+            <input type="text" class="form-control" name="animationName" required>
+          </div>
+          <div class="mb-3">
+            <label class="form-label">Description</label>
+            <textarea class="form-control" name="animationDescription" rows="3"></textarea>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+          <button type="submit" class="btn btn-primary">Create</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+</script>
+
+<script type="module">
+    import AnimationController from '/js/animationcontroller.js';
+    
+    // Singleton initialization
+    new AnimationController({{ json availableSteps }});
+</script>
+
+

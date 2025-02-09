@@ -1,0 +1,37 @@
+{
+  "name": "stairleds",
+  "version": "3.0.0",
+  "description": "Stairled-server Web UI",
+  "main": "server.js",
+  "type": "module",
+  "dependencies": {
+    "adafruit-pca9685": "^0.1.4",
+    "body-parser": "^1.19.0",
+    "bufferutil": "^4.0.3",
+    "express": "^4.17.1",
+    "express-handlebars": "^4.0.3",
+    "finalhandler": "^1.1.2",
+    "i2c": "^0.2.5",
+    "ip": "^1.1.5",
+    "mdns-js": "^1.0.3",
+    "mqtt": "^4.2.8",
+    "multer": "^1.4.2",
+    "mustache": "^4.0.1",
+    "nconf": "^0.11.3",
+    "node-walker": "^0.1.0",
+    "nodemon": "^3.1.7",
+    "onoff": "^5.0.1",
+    "raspi-gpio": "^6.2.2",
+    "serve-static": "^1.14.1",
+    "sleep": "^6.3.0",
+    "sqlite3": "^5.1.6",
+    "utf-8-validate": "^5.0.5",
+    "ws": "^7.5.6"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "sudo node server.js"
+  },
+  "author": "SchizoDuckie",
+  "license": "ISC"
+}

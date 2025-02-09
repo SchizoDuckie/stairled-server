@@ -1,0 +1,30 @@
+<div class="card shadow mb-4">
+    <div class="card-header py-3">
+        <h6 class="text-primary m-0">Access Point Configuration</h6>
+    </div>
+    <div class="card-body">
+        <form id="hostapd-form">
+            <div class="mb-3">
+                <label for="ap-ssid" class="form-label">SSID</label>
+                <input type="text" class="form-control" id="ap-ssid" name="ssid">
+            </div>
+            <div class="mb-3">
+                <label for="ap-password" class="form-label">Password</label>
+                <input type="password" class="form-control" id="ap-password" name="password">
+            </div>
+            <div class="mb-3">
+                <label for="ap-channel" class="form-label">Channel</label>
+                <select class="form-control" id="ap-channel" name="channel">
+                    {{#each (range 1 11)}}
+                        <option value="{{this}}">{{this}}</option>
+                    {{/each}}
+                </select>
+            </div>
+            <div class="mb-3">
+                <label for="ap-country" class="form-label">Country Code</label>
+                <input type="text" class="form-control" id="ap-country" name="country" maxlength="2">
+            </div>
+            <button type="submit" class="btn btn-primary">Save AP Settings</button>
+        </form>
+    </div>
+</div> 

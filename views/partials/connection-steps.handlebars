@@ -1,0 +1,19 @@
+<div class="alert alert-info">
+    <h5>Next Steps:</h5>
+    <ol>
+        {{#if isAPMode}}
+        <li>Device will reboot into Access Point mode</li>
+        <li>Connect to WiFi: <strong class="target-ssid">{{ssid}}</strong></li>
+        <li>This window will automatically redirect when ready</li>
+        {{else}}
+        <li>Connect to <strong class="target-ssid">{{ssid}}</strong></li>
+        <li>Wait for automatic redirect (1-2 minutes)</li>
+        {{/if}}
+        <li>If failed, access:<br>
+            <code>http://<span class="hostname-reference">{{hostname}}</span></code>
+            {{#if defaultHostname}}
+            or try: <code>http://{{defaultHostname}}</code>
+            {{/if}}
+        </li>
+    </ol>
+</div>

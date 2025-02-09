@@ -1,0 +1,126 @@
+<div class="row">
+    <div class="col col-12">
+        <div class="card shadow mb-3">
+            <div class="card-header py-3">
+                <p class="text-primary m-0 font-weight-bold">MQTT Settings</p>
+            </div>
+            <div class="card-body">
+                <form>
+                    <div class="form-row">
+                        <div class="col">
+                            <div class="form-group"><label for="hostname"><strong>Server</strong></label><input
+                                    class="form-control" type="text" placeholder="MQTT Server hostname" name="hostname" value="{{config.hostname}}">
+                            </div>
+                        </div>
+                        <div class="col">
+                            <div class="form-group"><label for="channel"><strong>Sensor Channel</strong></label><input
+                                    class="form-control" type="text" placeholder="sensor" name="channel" value="{{config.channel}}"></div>
+                        </div>
+                    </div>
+                    <div class="form-group"><button class="btn btn-primary btn-sm" type="submit">Save Settings</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+        <div class="card shadow">
+            <div class="card-header py-3">
+                <p class="text-primary m-0 font-weight-bold">Additional Settings</p>
+            </div>
+            <div class="card-body">
+                <form>
+                    <div class="form-group"><label for="address"><strong>Hostname</strong></label><input
+                            class="form-control" type="text" placeholder="stairleds" name="hostname"></div>
+                    <div class="form-group"><button class="btn btn-primary btn-sm"
+                            type="submit">Save&nbsp;Settings</button></div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="row">
+    <div class="col col-12">
+        <div class="card shadow mb-3">
+             <div class="card-header py-3">
+                <p class="text-primary m-0 font-weight-bold">Live incoming MQTT T.O.F. sensor data</p>
+            </div>
+            <div class="card-body">
+                <div >
+                  <canvas id="mycanvas"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+   
+      
+
+        window.onload = function () {
+            
+           // create initial empty chart
+            var ctx_live = document.getElementById("mycanvas");
+            var myChart = new Chart(ctx_live, {
+              type: 'line',
+              data: {
+                labels: [],
+                datasets: [{
+                  data: [],
+                  borderWidth: 1,
+                  borderColor:'#00c0ef',
+                  label: 'liveCount',
+                }]
+              },
+
+              options: {
+                animation: {
+            duration: 500 // general animation time
+        },
+                responsive: true,
+                title: {
+                  display: true,
+                  text: "Sensor #1 : Distance",
+                },
+                legend: {
+                  display: false
+                },
+                scales: {
+                  yAxes: [{
+                    ticks: {
+                      beginAtZero: true,
+                    }
+                  }]
+                }
+              }
+            });
+
+
+            var postId = 0;
+
+            // logic to get new data
+            window.socket.onmessage = function (result) {
+                console.log("New message!", result);
+                var message = JSON.parse(result.data);
+                for(var i =0; i<message.length;i++) {
+                      myChart.data.labels.push(new Date(message[i].timestamp).toISOString().substr(11, 8));
+                      myChart.data.datasets[0].data.push(message[i].value);
+                      if(myChart.data.labels.length > 200) {
+                            myChart.data.labels = myChart.data.labels.slice(1);
+                          myChart.data.datasets[0].data = myChart.data.datasets[0].data.slice(1); 
+                        }
+                }
+                
+              // re-render the chart
+              myChart.update();
+            }
+            
+            // get new data every 3 seconds
+            setInterval(getChartDataPoint, 500);
+    
+        };
+
+        function getChartDataPoint() {
+            window.socket.send('mqttlog');
+        }
+
+</script>

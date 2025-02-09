@@ -1,0 +1,55 @@
+<h3>Animation Step Configuration</h3>
+
+{{#each animations}}
+<div class="card mb-4">
+    <div class="card-header">
+        <h4>{{name}}</h4>
+        <p>{{description}}</p>
+    </div>
+    <div class="card-body">
+        <form method="post" action="/animations/steps">
+            <input type="hidden" name="animationName" value="{{name}}">
+            
+            <div class="step-groups">
+                {{#each stepConfig}}
+                <div class="step-group mb-3">
+                    <div class="input-group">
+                        <input type="text" class="form-control" 
+                               name="stepGroups[{{@index}}].name" 
+                               value="{{name}}" placeholder="Group Name">
+                        
+                        <select multiple class="form-control" 
+                                name="stepGroups[{{@index}}].leds">
+                            {{#each ../pinMapping}}
+                                <option value="{{pin}}" 
+                                        {{#if (includes ../leds pin)}}selected{{/if}}>
+                                    Step {{@key}}
+                                </option>
+                            {{/each}}
+                        </select>
+                        
+                        <button type="button" class="btn btn-danger remove-group">
+                            <i class="fa fa-trash"></i>
+                        </button>
+                    </div>
+                </div>
+                {{/each}}
+            </div>
+            
+            <button type="button" class="btn btn-secondary add-group">
+                Add Step Group
+            </button>
+            
+            <button type="submit" class="btn btn-primary">
+                Save Configuration
+            </button>
+        </form>
+    </div>
+</div>
+{{/each}}
+
+<script>
+    // Add handlers for adding/removing groups
+    // Add preview functionality
+    // etc...
+</script> 

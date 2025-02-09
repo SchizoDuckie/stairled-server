@@ -1,0 +1,214 @@
+{
+  "pca9685": {
+    "A": {
+      "freq": "120",
+      "correctionFactor": "1.0",
+      "address": "0x40",
+      "device": "/dev/i2c-1"
+    }
+  },
+  "pinmapper": {
+    "discoveredDevices": [
+      "0x40",
+      "0x41"
+    ],
+    "mapping": [
+      {
+        "driver": "0x41",
+        "pin": 0,
+        "step": 1
+      },
+      {
+        "driver": "0x41",
+        "pin": 1,
+        "step": 2
+      },
+      {
+        "driver": "0x41",
+        "pin": 2,
+        "step": 3
+      },
+      {
+        "driver": "0x41",
+        "pin": 3,
+        "step": 4
+      },
+      {
+        "driver": "0x41",
+        "pin": 4,
+        "step": 5
+      },
+      {
+        "driver": "0x41",
+        "pin": 5,
+        "step": 6
+      },
+      {
+        "driver": "0x41",
+        "pin": 6,
+        "step": 7
+      },
+      {
+        "driver": "0x41",
+        "pin": 7,
+        "step": 8
+      },
+      {
+        "driver": "0x41",
+        "pin": 8,
+        "step": 9
+      },
+      {
+        "driver": "0x41",
+        "pin": 9,
+        "step": 10
+      },
+      {
+        "driver": "0x41",
+        "pin": 10,
+        "step": 11
+      },
+      {
+        "driver": "0x41",
+        "pin": 11,
+        "step": 12
+      },
+      {
+        "driver": "0x41",
+        "pin": 12,
+        "step": 13
+      },
+      {
+        "driver": "0x41",
+        "pin": 13,
+        "step": 14
+      },
+      {
+        "driver": "0x41",
+        "pin": 14,
+        "step": 15
+      },
+      {
+        "driver": "0x41",
+        "pin": 15,
+        "step": 16
+      },
+      {
+        "driver": "0x40",
+        "pin": 0,
+        "step": 17
+      },
+      {
+        "driver": "0x40",
+        "pin": 1,
+        "step": 18
+      },
+      {
+        "driver": "0x40",
+        "pin": 2,
+        "step": 19
+      },
+      {
+        "driver": "0x40",
+        "pin": 3,
+        "step": 20
+      },
+      {
+        "driver": "0x40",
+        "pin": 4,
+        "step": 21
+      },
+      {
+        "driver": "0x40",
+        "pin": 5,
+        "step": 22
+      },
+      {
+        "driver": "0x40",
+        "pin": 6,
+        "step": 23
+      },
+      {
+        "driver": "0x40",
+        "pin": 7,
+        "step": 24
+      },
+      {
+        "driver": "0x40",
+        "pin": 8,
+        "step": 25
+      },
+      {
+        "driver": "0x40",
+        "pin": 9,
+        "step": 26
+      },
+      {
+        "driver": "0x40",
+        "pin": 10,
+        "step": 27
+      },
+      {
+        "driver": "0x40",
+        "pin": 11,
+        "step": 28
+      },
+      {
+        "driver": "0x40",
+        "pin": 12,
+        "step": 29
+      },
+      {
+        "driver": "0x40",
+        "pin": 13,
+        "step": 30
+      },
+      {
+        "driver": "0x40",
+        "pin": 14,
+        "step": 31
+      },
+      {
+        "driver": "0x40",
+        "pin": 15,
+        "step": 32
+      }
+    ]
+  },
+  "animations": {
+    "LightEmUp!": []
+  },
+  "mqtt": {
+    "enabled": true,
+    "hostname": "localhost",
+    "channel": "sensors"
+  },
+  "sensors": [
+    {
+      "name": "stairled-sensor-zolder-boven",
+      "channel": 0,
+      "triggerThreshold": 64,
+      "triggerType": "<=",
+      "triggerEffect": "center splash"
+    }
+  ],
+  "ntp": {
+    "offTimes": [
+      {
+        "enabled": true,
+        "start": "12:00",
+        "end": "18:00"
+      },
+      {
+        "enabled": false,
+        "start": "00:00",
+        "end": "00:00"
+      },
+      {
+        "enabled": false,
+        "start": "00:00",
+        "end": "00:00"
+      }
+    ]
+  }
+}

@@ -1,0 +1,22 @@
+---
+description: general guides on making changes
+globs: *.js,*.css,*.handlebars
+---
+
+
+when making changes:
+- always make small, compact changes. Do not change logic for a slightly altered version for no reason
+- do not touch existing code, do not swap the place of existing code without a good reason
+- always create a docblock for new functions with a description, params, returns.
+- do not add useless comments about what you just changed that will end up in code. adjust the docblock description
+  with the description of how the code now works if that doesnt improve documentation quality.
+- use early exits where possible
+- create controller classes for clientside pages that need logic, and use clientside handlebars for swapping out html.
+- use the existing code in public/js/animationcontroller.js as a guide for how to create new classes:
+  - make sure to export the class as an instance default
+  - make sure to use the window.addEventListener('load', () => { ... }) pattern for initializing the class
+  - make sure to use the this.compileTemplates() pattern for compiling any templates for the controller
+  - make sure to use the this.initializeEventHandlers() pattern for initializing the event handlers as $(document).on('event', 'selector', function() { ... })
+- do not embed blobs of html inside the template, we have handlebars for that. create a new template in views/partials for partials.
+- functions should always have a docblock. make sure to check the [docblock-style.mdc](mdc:.cursor/rules/docblock-style.mdc) rules for how to craft those.
+

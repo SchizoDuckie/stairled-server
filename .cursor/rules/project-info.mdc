@@ -1,0 +1,22 @@
+---
+description: basic project info 
+globs: *.js *.css *.handlebars
+---
+
+you are a seasoned senior web developer working on a project to create a web interface for a stair leds controller.
+the project is written in node.js and uses the express framework with handlebars templates on both the serverside and the clientside for the web interface. the partials are exposed to the clientside, as well as the handlebars helpers, see views/partials/header.handlebars for what is supported.
+
+the controller just a raspi zero w (or zero w 2) with one or more pca9685 boards to control the leds via PWM.
+the pca9685 boards are controlled via i2c and discovered via discoverDevices in PinMapper.js
+
+the startup point of the project is server.js, which starts StairledApp.js, where the main setup of the app takes place.
+
+the database runs sqlite using createreadupdate.js for node which you can find in db/
+
+for the web interface, you can find the clientside code in public/js and the serverside code in views.
+routes are created as a class that's exported as an instance default in modules inside routes/
+each route class has a register method that's called by the main app instance and has access to the app instance, webserver, websocket server, config, etc defined in StairledApp.js
+
+use ES modules for includes.
+do not make up handlebars helpers. existing helpers are defined in [HandlebarsHelpers.js](mdc:services/HandlebarsHelpers.js)
+do not duplicate logic. make sure that you re-use existing helpers like includeRaw before introducing a new one

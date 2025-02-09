@@ -1,0 +1,29 @@
+<div class="card shadow mb-4">
+    <div class="card-header py-3">
+        <h6 class="text-primary m-0">WiFi Mode</h6>
+    </div>
+    <div class="card-body">
+        <div class="row align-items-center">
+            <div class="col-md-6">
+                <div class="form-check form-check-inline">
+                    <input class="form-check-input" type="radio" name="wifiMode" id="modeClient" value="Client">
+                    <label class="form-check-label" for="modeClient">Client Mode</label>
+                </div>
+                <div class="form-check form-check-inline">
+                    <input class="form-check-input" type="radio" name="wifiMode" id="modeAP" value="AP">
+                    <label class="form-check-label" for="modeAP">Access Point Mode</label>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div id="wifiStatus">
+                    <strong>Current IP:</strong> <span id="currentIP">-</span><br>
+                    <strong>Signal Strength:</strong> <span id="signalStrength">-</span><br>
+                    <strong>Bit Rate:</strong> <span id="bitRate">-</span>
+                </div>
+            </div>
+        </div>
+        <div class="mt-3">
+            <button id="switchMode" class="btn btn-warning">Switch Mode</button>
+        </div>
+    </div>
+</div> 

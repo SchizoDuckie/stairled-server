@@ -1,0 +1,159 @@
+<form method="post">
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="alert alert-success mode-banner">
+                <div class="d-flex justify-content-between align-items-center">
+                    <div>
+                        <h3 class="mb-0">
+                            💡Ledstrip Pin Mappings</h3>
+                        <p class="mb-0 mt-2">
+                            Configure the port mappings for your stair leds here. You can verify which led is connected to which
+                            step
+                            by using the test green test buttons and sliders
+                        </p>
+                    </div>
+                    <button type="submit" class="btn btn-outline-success btn-sm"><i class="fa fa-save"></i> Save Changes</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+      <div class="row">
+        {{#each drivers as |ports address|}}
+        <div class="col-md-4">
+            <div class="card shadow pca9685" id="driver_{{address}}" data-driver="{{address}}">
+                <div class="card-header">
+                    <div class="row">
+                        <div class="col">
+                            <p class="text-primary text-strong mb-0">
+                                <i class="fa fa-microchip"></i>&nbsp;LED Driver: <code>{{address}}</code>
+                            </p>
+                        </div>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <div class="table-responsive table mt-2" role="grid">
+                        <label for="linksliders_{{address}}" style="float:right; margin:0">
+                            <input type="checkbox" class="linksliders" id='linksliders_{{address}}' data-driver="{{address}}"> Link all sliders
+                        </label>
+                        <table class="table table-sm my-0">
+                            <thead>
+                                <tr>
+                                    <th>
+                                        <label for="enable_{{address}}" style="margin:0; white-space: nowrap;">
+                                            <input type="checkbox" class="enable-all" id='enable_{{address}}' data-driver="{{address}}"> Use
+                                        </label>
+                                    </th>
+                                    <th title="PCA9685 Port Number">#</th>
+                                    <th title=""Stair step #">Step #</th>
+                                    <td></td>
+                                    <th>
+
+                                        Test
+                                        {{#if @first}}
+                                        
+                                        {{/if}}
+                                    </th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {{#each ports as |stepNum portNum|}}
+                                <tr{{#if stepNum}} class="table-active"{{/if}}>
+                                    <td>
+                                        <input type="checkbox" {{#if stepNum}}checked{{/if}}>
+                                    </td>
+                                    <td>{{portNum}}</td>
+                                    <td>
+                                        <input class="bg-dark border rounded {{#unless stepNum}}border-dark{{else}}border-primary{{/unless}} form-control-sm" 
+                                               type="number" 
+                                               name="pins[{{address}}][{{portNum}}]" 
+                                               {{#unless stepNum}}disabled="disabled"{{/unless}} 
+                                               style="color: #b1b1b1;width: 60px;" 
+                                               {{#if stepNum}}value="{{stepNum}}"{{/if}}
+                                               min="1"
+                                               max="100">
+                                    </td>
+                                    <td>
+                                        <button type='button' class='btn btn-sm btn-outline-success' data-identify>
+                                            <i class='fa fa-lightbulb'></i>
+                                        </button>
+                                    </td>
+                                    <td>
+                                        <input class="custom-range" type="range" value="0" min="0" max="4095" 
+                                               data-driver="{{address}}" data-port="{{portNum}}">
+                                    </td>
+                                </tr>
+                                {{/each}}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {{/each}}
+    </div>
+</form>
+
+<script src="js/DriverController.js"></script>
+<script src="js/DriverManager.js"></script>
+<script type="text/javascript">
+
+$(document).ready(function () {
+    const socket = new WebSocket(`ws://${window.location.hostname}:${window.location.port}`);
+    socket.addEventListener('open', () => {
+        console.log("🔌 WebSocket connected");
+        new DriverManager(socket);
+    });
+
+    $('form').on('submit', function (e) {
+        e.preventDefault();
+
+        const mappings = [];
+
+        // Collect ALL enabled inputs across ALL drivers
+        $('.pca9685').each(function () {
+            const driverId = $(this).data('driver');
+
+            // Find all enabled inputs within this driver
+            $(this).find('input[type=number]:enabled').each(function () {
+                const $input = $(this);
+                const pin = parseInt($input.closest('tr').find('td:eq(1)').text());  // Get pin from the # column
+                const step = parseInt($input.val());
+
+                if (!isNaN(pin) && !isNaN(step) && driverId) {
+                    mappings.push({
+                        driver: driverId,
+                        pin: pin,
+                        step: step
+                    });
+                }
+            });
+        });
+
+        // Only submit if we have valid mappings
+        if (mappings.length > 0) {
+            // Sort by step number
+            mappings.sort((a, b) => a.step - b.step);
+
+            fetch('/pca9685', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ mappings })
+            }).then(() => window.location.reload());
+        }
+    });
+});
+
+</script>
+
+<style>
+    .table td, .table th {
+        vertical-align: middle; /* Align content vertically */
+        padding: 8px; /* Consistent padding */
+    }
+    .custom-range {
+        width: 100%; /* Ensure sliders take full width */
+    }
+</style>

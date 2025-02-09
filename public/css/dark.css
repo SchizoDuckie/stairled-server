@@ -1,0 +1,32 @@
+body {
+    min-height: 100vh;
+}
+
+.bg-gradient-primary {
+    background: linear-gradient(180deg, #4e73df 10%, #224abe 100%);
+}
+
+#menu a {
+    color: #fff;
+}
+
+#menu a:hover {
+    background-color: rgba(255, 255, 255, 0.1);
+}
+
+@media (max-width: 767.98px) {
+    .col-auto.col-md-3.col-xl-2 {
+        width: 4.5rem;
+    }
+    
+    .col-auto.col-md-3.col-xl-2 .d-none {
+        display: none !important;
+    }
+    
+    .col-auto.col-md-3.col-xl-2 .nav-link {
+        justify-content: center;
+    }
+}
+
+
+/* Remove any chart-specific styles as they're now handled by Bootstrap classes */

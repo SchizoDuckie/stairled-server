@@ -1,0 +1,10 @@
+<div class="d-sm-flex justify-content-between align-items-center mb-4">
+    <h3 class="mb-0">Home - Dashboard</h3>
+</div>
+<div class="row">
+    {{> dashboard-card color="primary" title="Upstairs triggers" value=uptriggers icon="fas fa-running" style="transform: rotateZ(-30deg);"}}
+    {{> dashboard-card color="success" title="Downstairs triggers" value=downtriggers icon="fas fa-running" style="transform: rotateY(180deg) rotateZ(20deg);"}}
+    {{> dashboard-card color="info" title="Fastest time" value=fastestTime icon="fas fa-stopwatch"}}
+    {{> dashboard-card color="warning" title="Slowest time" value=slowestTime icon="fas fa-stopwatch"}}
+</div>
+<!-- Rest of the dashboard content -->

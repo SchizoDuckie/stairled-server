@@ -1,0 +1,47 @@
+---
+description: Rules for writing clear, concise docblocks with specific functionality descriptions
+globs: *.js
+---
+If you touch a class, leave it better than you found it. 
+Always improve documentation and update it to the current way the code works if you touch af ile.
+
+rules:
+  - name: Class Docblocks
+    pattern: "class\\s+\\w+"
+    requirements:
+      - Must list all major functionality areas
+      - Must be specific about features and capabilities
+      - Must be staccato style (short, direct phrases)
+      - No @private or other redundant tags
+      - Focus on WHAT the class does, not HOW
+
+  - name: Method Docblocks
+    pattern: "\\s+\\w+\\([^)]*\\)\\s*{"
+    requirements:
+      - Must describe specific actions and outcomes
+      - Must list key behaviors and side effects
+      - Must mention timing for async operations
+      - Must note important validations
+      - Must describe UI feedback if applicable
+      - No @private or similar tags
+      - Must be staccato style
+      - Must list all arguments, their types and their use
+
+example: |
+  /**
+   * Manages WiFi interface functionality including:
+   * - AP/Client mode switching
+   * - Network scanning and selection
+   * - Real-time status monitoring
+   * - AP and client configuration
+   */
+  class Example {
+    /**
+     * Updates real-time WiFi status display
+     * Shows current IP, signal strength, bitrate
+     * Updates mode-specific settings if in AP mode
+     * Runs every 5 seconds
+     * @param {string} param something very imporant to pass
+     */
+    method(param) {}
+  } 

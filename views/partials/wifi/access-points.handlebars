@@ -1,0 +1,45 @@
+<div class="card shadow mb-4">
+    <div class="card-header py-3">
+        <p class="text-primary text-strong m-0">Nearby Access Points</p>
+    </div>
+    <div class="card-body" id="networks">
+        {{#if accessPoints}}
+            <table class="table table-hover">
+                <thead>
+                <tr>
+                    <th scope="col">SSID</th>
+                    <th scope="col">Signal</th>
+                    <th scope="col">Channel</th>
+                    <th scope="col">Security</th>
+                </tr>
+                </thead>
+                <tbody>
+                {{#each accessPoints}}
+                    <tr class="access-point" data-ssid="{{ssid}}">
+                        <td>{{this.ssid}}</td>
+                        <td>
+                            <span class="signal-strength {{toLowerCase strength}}">
+                                <div class="progress" style="height: 20px;">
+                                    <div class="progress-bar bg-{{signalStrengthClass strength}}" 
+                                         role="progressbar" 
+                                         style="width: {{signal_percent}}%"
+                                         aria-valuenow="{{signal_percent}}" 
+                                         aria-valuemin="0" 
+                                         aria-valuemax="100">
+                                        {{signal_level}} dBm
+                                    </div>
+                                </div>
+                                <small class="text-muted">{{strength}} ({{signal_percent}}%)</small>
+                            </span>
+                        </td>
+                        <td>{{channel}}</td>
+                        <td>{{security}}</td>
+                    </tr>
+                {{/each}}
+                </tbody>
+            </table>
+        {{else}}
+            <i class="fa fa-spin fa-4x"></i>
+        {{/if}}
+    </div>
+</div> 

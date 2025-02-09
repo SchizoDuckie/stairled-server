@@ -1,0 +1,214 @@
+<div class="container-fluid wifi-dashboard">
+    {{{clientHelpers}}}
+    
+    <!-- Mode Status Banner -->
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="alert alert-{{#if_eq mode 'AP'}}success{{else}}info{{/if_eq}} mode-banner">
+                <div class="d-flex justify-content-between align-items-center">
+                    <div>
+                        <h3 class="mb-0">
+                            <i class="fas {{#if_eq mode 'AP'}}fa-broadcast-tower{{else}}fa-wifi{{/if_eq}} me-2"></i>
+                            Current Mode: {{#if_eq mode 'AP'}}Access Point{{else}}Client{{/if_eq}}
+                        </h3>
+                        <p class="mb-0 mt-2">
+                            {{#if_eq mode 'AP'}}
+                                Broadcasting network: <strong>{{runtimeConfig.ssid}}</strong> on channel <strong>{{runtimeConfig.channel}}</strong>
+                            {{else}}
+                                Connected to: <strong>{{connectedNetwork.ssid}}</strong> ({{connectedNetwork.signal}} dBm)
+                            {{/if_eq}}
+                        </p>
+                    </div>
+                    <button class="btn btn-outline-warning mode-switch-btn" 
+                            data-current-mode="{{mode}}">
+                        Switch to {{#if_eq mode 'AP'}}Client{{else}}AP{{/if_eq}} Mode
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- AP Configuration Section -->
+    {{#if_eq mode 'AP'}}
+    <div class="row">
+        <div class="col-md-6">
+            <div class="card mb-4">
+                <div class="card-header">
+                    <p class="text-primary text-strong mb-0">
+                        <i class="fas fa-broadcast-tower me-2"></i>Access Point Configuration
+                    </p>
+                </div>
+                <div class="card-body">
+                    <form id="apConfigForm">
+                        <div class="mb-3">
+                            <label class="form-label">Network Name (SSID)</label>
+                            <input type="text" class="form-control" 
+                                   name="ssid" required
+                                   value="{{runtimeConfig.ssid}}">
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Password</label>
+                            <input type="password" class="form-control" 
+                                   name="password" required
+                                   value="********"
+                                   minlength="8">
+                            <input type="hidden" name="original_password" 
+                                   value="{{runtimeConfig.password}}">
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Channel</label>
+                            <select class="form-select" name="channel">
+                                {{#each (range 1 14)}}
+                                    <option value="{{this}}" {{#if_eq (toString this) (toString ../runtimeConfig.channel)}}selected{{/if_eq}}>
+                                        Channel {{this}}
+                                    </option>
+                                {{/each}}
+                            </select>
+                        </div>
+                        <button type="submit" class="btn btn-outline-success"><i class="fas fa-save"></i> Save AP Settings</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <!-- Additional Network Settings Card -->
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-header">
+                    <p class="text-primary text-strong mb-0">
+                        <i class="fas fa-network-wired me-2"></i>Network Settings
+                    </p>
+                </div>
+                <div class="card-body">
+                    <form id="additionalSettingsForm">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <div>
+                                <p class="alert text-warning mb-0">
+                                    <i class="fas fa-exclamation-triangle me-2"></i>
+                                    Note that the hostname change will take effect on reboot
+                                </p>
+                            </div>
+
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Device Hostname</label>
+                            <input type="text" class="form-control" 
+                                   name="hostname" 
+                                   value="{{runtimeConfig.hostname}}"
+                                   pattern="[a-zA-Z0-9-]+"
+                                   title="Letters, numbers and hyphens only">
+                        </div>
+                        <button type="submit" class="btn btn-outline-success">
+                            <i class="fas fa-save me-2"></i>Save Device Hostname
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+    {{/if_eq}}
+
+    <!-- Mode Switch Modal -->
+    <div class="modal fade" id="modeSwitchModal" tabindex="-1">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Switch to Client Mode</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="row g-4">
+                        <!-- Network List Column -->
+                        <div class="col-md-6">
+                            <div class="network-selection">
+                                <h6>Available Networks:</h6>
+                                <div class="mb-3">
+                                    <input type="text" 
+                                           class="form-control" 
+                                           id="manualSSID"
+                                           placeholder="Enter hidden network name">
+                                </div>
+                                <div class="network-list" style="max-height: 80vh; overflow-y: auto;">
+                                    <div class="list-group" id="modeSwitchNetworkList">
+                                        {{#each accessPoints}}
+                                            {{#if ssid}} {{!-- Hide networks with empty SSID --}}
+                                            <a href="#" class="list-group-item list-group-item-action network-option"
+                                               data-ssid="{{ssid}}"
+                                               data-bssid="{{bssid}}"
+                                               data-security="{{security}}">
+                                                <div class="d-flex justify-content-between align-items-center">
+                                                    <span class="text-truncate">{{ssid}}</span>
+                                                    <div class="signal-bars" 
+                                                         data-percent="{{signalPercentage signal_level}}">
+                                                        <span class="signal-percent">{{signalPercentage signal_level}}%</span>
+                                                        <div class="bar"></div>
+                                                        <div class="bar"></div>
+                                                        <div class="bar"></div>
+                                                        <div class="bar"></div>
+                                                        <div class="bar"></div>
+                                                    </div>
+                                                </div>
+                                                <small class="text-muted">Ch.{{channel}} • {{security}}</small>
+                                            </a>
+                                            {{/if}}
+                                        {{/each}}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Connection Form Column -->
+                        <div class="col-md-6">
+                            <div class="connection-guide">
+                                <h6>Connection Instructions</h6>
+                                <ol class="mb-4">
+                                    <li>Select a network from the list</li>
+                                    <li>Enter the password</li>
+                                    <li>Click "Connect"</li>
+                                </ol>
+                                
+                                <div class="selected-network mb-3">
+                                    <span class="fw-bold">Selected Network:</span>
+                                    <span id="selectedSSID" class="text-primary">None selected</span>
+                                </div>
+
+                                <form id="modeSwitchAuthForm">
+                                    <div class="mb-3">
+                                        <label class="form-label">Network Password</label>
+                                        <input type="password" class="form-control" 
+                                               id="modeSwitchPassword" required
+                                               autocomplete="new-password"
+                                               placeholder="Enter network password">
+                                    </div>
+                                    <div class="d-grid gap-2">
+                                        <button type="submit" class="btn btn-primary">
+                                            <i class="fas fa-plug me-2"></i>Connect
+                                        </button>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Rest of the template content -->
+    {{! ... existing network list and modals ... }}
+</div>
+
+<head>
+    <link rel="stylesheet" href="/css/wifi.css">
+</head>
+
+<script type="text/x-handlebars-template" id="network-item-partial">
+    {{{includeRaw 'network-item'}}}
+</script> 
+
+<script src="/js/WifiController.js"></script>
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        new WifiController().initialize();
+    });
+</script>
