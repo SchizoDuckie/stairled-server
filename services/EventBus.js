@@ -13,6 +13,8 @@ class EventBus extends EventEmitter {
         SENSOR_STATUS: 'sensor:status',
         SENSOR_DATA: 'sensor:data',
         SENSOR_CONFIG: 'sensor:config',
+        SENSOR_TRIGGERED: 'sensor:triggered',
+        SENSOR_ANIM_FINISHED: 'sensor:anim:finished',
 
         // System events
         SYSTEM_ERROR: 'system:error',
@@ -22,13 +24,17 @@ class EventBus extends EventEmitter {
         // Service events
         SERVICE_STATUS: 'service:status',
         MQTT_MESSAGE: 'mqtt:message',
-        MDNS_STATUS: 'mdns:status'
+        MDNS_STATUS: 'mdns:status',
+
+        // Animation events (todo)
+        ANIMATION_STARTED: 'animation:started',
+        ANIMATION_FINISHED: 'animation:finished',
     };
 
     constructor() {
         super();
         // Set higher limit for event listeners
-        this.setMaxListeners(50);
+        this.setMaxListeners(150);
     }
 
 
@@ -38,6 +44,7 @@ class EventBus extends EventEmitter {
      * @param {Object} data - Data object to pass with the event
      */
     emitData(event, data) {
+        console.log("Emit event:", event, data);
         this.emit(event, data);
     }
 

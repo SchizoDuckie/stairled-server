@@ -10,8 +10,9 @@ import { eventBus, Events } from './services/EventBus.js';
 import PCA9685 from "./drivers/adafruit-pca9685-patched.js";
 import WebsocketServer from './WebsocketServer.js';
 import { animationService } from './services/AnimationService.js';
-import fs from 'fs';
 import { fileURLToPath } from 'url';
+import Stairlog from "./db/entities/Stairlog.js";
+
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -39,6 +40,8 @@ class StairledApp {
         ];
 
         this.components = {};
+        this.active = false;                
+
     }
 
     /**
@@ -88,55 +91,40 @@ class StairledApp {
 
     connectEventHandlers() {
     
-        // MQTT event handlers
-        this.mqtt.on('log', message => eventBus.system('info', message));
-        this.mqtt.on('error', error => eventBus.system('error', 'MQTT Error', error));
-       // this.mqtt.on('sensorData', (sensor, value) => eventBus.emitData(Events.SENSOR_DATA, { sensor, value }));
-        
-        this.mqtt.on('sensorDiscovered', sensor => eventBus.emitData(Events.SENSOR_DISCOVERED, { name: sensor }));
+        eventBus.on(Events.SENSOR_TRIGGERED, (data) => {
+            console.log("Sensor triggered event!", this.active, data);
+            let sensor = data.sensor;
 
-        
-        this.eventBus.on(Events.SYSTEM_INFO, message => console.log("Eventbus info: ",  message));
-        
-        // create new sensor instances when a sensor is discovered
-        this.eventBus.on(Events.SENSOR_DISCOVERED, async (device) => {
-            console.log("📡Sensor discovered: ", device);
-            if (device && device.name) {
-                // FIRST check if we already have a config for this sensor
-                const existingConfig = this.config.get('sensors')?.find(s => s.name === device.name);
-                
-                // Use existing config if found, otherwise create new with defaults
-                const sensorConfig = existingConfig || {
-                    name: device.name,
-                    channel: 0,  // Default channel
-                    triggerThreshold: 50,
-                    triggerType: '<=',
-                    upperThreshold: 100
-                };
+            if(!this.active) {
+                console.log(`Sensor '${sensor.name}' triggered! Measured ${data.value} ${sensor.triggerType} configured treshold ${sensor.triggerThreshold}. Starting LedstripAnimation '${sensor.triggerEffect}'`);         
+            
+                this.active = true;
+                console.log("Sensor triggered event!");
+                sensor.anim.start();
 
-                // Only create new sensor if it doesn't already exist
-                if (!this.sensors.some(s => s.name === device.name)) {
-                    const sensor = new Sensor(sensorConfig);
-                    this.sensors = this.sensors || [];
-                    this.sensors.push(sensor);
-                    
-                    // Only save to config if it's a new sensor
-                    if (!existingConfig) {
-                        this.config.set('sensors', this.sensors.map(s => ({
-                            name: s.name,
-                            channel: s.channel,
-                            triggerThreshold: s.triggerThreshold,
-                            triggerType: s.triggerType,
-                            triggerEffect: s.triggerEffect
-                        })));
-                        await this.config.save();
-                    }
-                }
+                setTimeout(() => {
+                    eventBus.emit(Events.SENSOR_ANIM_FINISHED, {sensor: sensor});
+                }, sensor.anim.animation.timeline.duration);
+
+            } else {
+                console.log(`🚫 Sensor '${data.sensor.name}' triggered by ${data.value}, but blocked by currently running animation.`);
             }
         });
 
+        eventBus.on(Events.SENSOR_ANIM_FINISHED, (data) => {
+            this.active = false;
+            console.log(`🚫 Sensor '${data.sensor.name}' animation finished. unblocking new triggers.`);
+        });
+
+        
+        // MQTT event handlers
+        this.mqtt.on('log', message => eventBus.system('info', message));
+        this.mqtt.on('error', error => eventBus.system('error', 'MQTT Error', error));
+    
+        this.mqtt.on('sensorDiscovered', sensor => eventBus.emitData(Events.SENSOR_DISCOVERED, { name: sensor }));
+
         // remove sensor instances when a sensor removal was detected
-        this.eventBus.on(Events.SENSOR_REMOVED, device => {
+        eventBus.on(Events.SENSOR_REMOVED, device => {
             console.log("📡 Sensor removed: ", device);
             if (device && device.name) {
                 this.sensors = this.sensors.filter(sensor => 
@@ -145,6 +133,8 @@ class StairledApp {
             }
         });
 
+        
+        
     }
 
     /**
@@ -183,38 +173,31 @@ class StairledApp {
     }
 
     /**
-     * Load default config variables and override with user config from user.json
+     * Load config variables in order of precedence:
+     * 1. Command line arguments
+     * 2. Environment variables
+     * 3. User config file (user.json)
+     * 4. Default config file (default.json)
      * @returns {nconf.Provider}
      */
     initConfig() {
-        // Load default config
-        const defaultConfig = JSON.parse(
-            fs.readFileSync(path.join(__dirname, 'config/default.json'), 'utf8')
-        );
+        const config = new nconf.Provider();
         
-        // Attempt to load user config
-        let userConfig = {};
-        const userConfigPath = path.join(__dirname, 'config/user.json');
-        if (fs.existsSync(userConfigPath)) {
-            userConfig = JSON.parse(fs.readFileSync(userConfigPath, 'utf8'));
-        }
+        config.argv()                     // Command-line arguments
+             .env()                       // Environment variables
+             .file('user', {             // User configuration
+                file: path.join(__dirname, 'config', 'user.json'),
+                logicalSeparator: ':',
+                format: {
+                    parse: JSON.parse,
+                    stringify: (obj) => JSON.stringify(obj, null, 2)
+                }
+             })
+             .file('defaults', {         // Default configuration
+                file: path.join(__dirname, 'config', 'default.json')
+             });
 
-        // Create config provider
-        const config = new nconf.Provider()
-            .defaults(defaultConfig)
-            .overrides(userConfig);
-
-        // Configure file storage
-        config.file('user', {
-            file: userConfigPath,
-            logicalSeparator: ':',
-            format: {
-                parse: JSON.parse,
-                stringify: (obj) => JSON.stringify(obj, null, 2)
-            }
-        });
-
-        console.log("Config loaded with hierarchy: defaults ← user overrides");
+        console.log("Config loaded with hierarchy: CLI args ← env vars ← user config ← defaults");
         return config;
     }
 
@@ -224,15 +207,15 @@ class StairledApp {
      */
     async initPinMapper() {
         console.log("Initializing PCA9685 Pin Mapper");
-
-        
+       
         
         try {
+            const storedMapping = this.config.get('pinmapper:mapping');
+
             // Auto-discover all PCA9685 devices and set up initial mapping
-            await pinMapper.initializeDiscoveredDevices(PCA9685);
+            await pinMapper.initializeDiscoveredDevices(PCA9685, storedMapping);
             
             // Load existing mapping from config if it exists
-            const storedMapping = this.config.get('pinmapper:mapping');
             if (Array.isArray(storedMapping)) {
                 pinMapper.setPinMapping(storedMapping);
                 console.log("Loaded pin mapping from config");
