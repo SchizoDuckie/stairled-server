@@ -1,3 +1,60 @@
-<div class="d-sm-flex justify-content-between align-items-center mb-4">
-    <h3 class="text-dark mb-0">About</h3>
+<div class="container mt-4">
+    <h1>System Information</h1>
+    
+    <div class="card mb-4">
+        <div class="card-body">
+            <h5 class="card-title">Version Details</h5>
+            <dl class="row">
+                <dt class="col-sm-3">Current Version</dt>
+                <dd class="col-sm-9">{{ currentVersion }}</dd>
+                
+                <dt class="col-sm-3">Last Checked</dt>
+                <dd class="col-sm-9">{{ lastChecked }}</dd>
+            </dl>
+        </div>
+    </div>
+
+    <div class="card">
+        <div class="card-body">
+            <h5 class="card-title">System Updates</h5>
+            <div id="updateStatus"></div>
+            <button 
+                class="btn btn-primary" 
+                onclick="checkUpdate()"
+                {{#if updateAvailable}}disabled{{/if}}
+            >
+                {{#if updateAvailable}}
+                    Update Ready - Restart to Apply
+                {{else}}
+                    Check for Updates
+                {{/if}}
+            </button>
+        </div>
+    </div>
 </div>
+
+<script>
+function checkUpdate() {
+    fetch('/about/check-update', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' }
+    })
+    .then(response => response.json())
+    .then(data => {
+        const statusDiv = document.getElementById('updateStatus');
+        if (data.success) {
+            statusDiv.innerHTML = `
+                <div class="alert alert-success mt-3">
+                    ${data.message}
+                </div>
+            `;
+        } else {
+            statusDiv.innerHTML = `
+                <div class="alert alert-danger mt-3">
+                    ${data.error || 'Update check failed'}
+                </div>
+            `;
+        }
+    });
+}
+</script> 
