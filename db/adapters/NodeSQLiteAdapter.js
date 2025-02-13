@@ -26,12 +26,12 @@ class NodeSQLiteAdapter extends ConnectionAdapter {
      */
     async connect(databaseName) {
         return new Promise((resolve, reject) => {
-            this.db = new sqlite3.Database(databaseName, (err) => {
+            let db = new sqlite3.Database(databaseName, (err) => {
                 if (err) {
                     console.error(`Error connecting to database ${databaseName}:`, err);
                     reject(err);
                 } else {
-                    resolve(true);
+                    resolve(db);
                 }
             });
         });
@@ -41,7 +41,7 @@ class NodeSQLiteAdapter extends ConnectionAdapter {
      * Initialize the database, verifying tables and setting up listeners.
      */
     async Init() {
-        await this.connect(this.databaseName);
+        this.db = await this.connect(this.databaseName);
         await this.verifyTables();
         this.initializing = false;
 

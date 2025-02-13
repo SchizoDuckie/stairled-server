@@ -1,5 +1,6 @@
 import CRUD from './CRUD.js';
 
+
 /**
  * Entity class handles the data operations for CRUD operations, maintaining both the current and dirty states of entity properties.
  */
@@ -229,7 +230,7 @@ class Entity {
       this.ID = this.__values__[CRUD.EntityManager.getPrimary(thatType)];
       return result;
     } catch (error) {
-      CRUD.log("Error saving CRUD entity", that, error);
+      console.error("Error saving CRUD entity", that, error);
       throw(error);
     }
   }
@@ -246,7 +247,7 @@ class Entity {
       delete CRUD.EntityManager.cache[this.getType()][this.getID()];
       this.__values__[CRUD.EntityManager.getPrimary(this.getType())] = false;
     } catch (error) {
-      CRUD.log("Error deleting entity", this, error);
+      console.error("Error deleting entity", this, error);
       throw error
     }
   }
