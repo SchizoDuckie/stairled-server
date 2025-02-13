@@ -107,11 +107,7 @@ class Pca9685 {
      * @param {string|number} value - PWM value to set (0-4095)
      */
     handleSetPWM(app, address, ports, value) {
-        console.log(`\n=== Processing setPWM ===`);
-        console.log(`Address: ${address} (${typeof address})`);
-        console.log(`Ports: ${ports} (${typeof ports})`);
-        console.log(`Value: ${value} (${typeof value})`);
-
+       
         const driver = app.pinMapper.getDriverByAddress(address);
         if (!driver) {
             console.error(`Invalid driver address: ${address}`);
@@ -124,9 +120,7 @@ class Pca9685 {
             .map(p => parseInt(p, 10))
             .filter(p => !isNaN(p) && p >= 0 && p < 16);
         
-        console.log(`Parsed port numbers:`, portNumbers);
-        console.log(`Parsed PWM value:`, parseInt(value));
-
+       
         // Fallback to individual updates
         portNumbers.forEach(port => {
             try {
