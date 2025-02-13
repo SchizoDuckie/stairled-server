@@ -35,11 +35,13 @@ class WifiConfigService {
      */
     async computeWpaPsk(ssid, password) {
         try {
+            console.log(`computing wpa_passphrase for "${ssid}" "${password}"`);
             const { stdout } = await execAsync(`wpa_passphrase "${ssid}" "${password}"`);
-            const pskMatch = stdout.match(/^\s*psk=([0-9a-f]{64})$/m);
+            console.log(stdout);
+            const pskMatch = stdout.match(/^\s*psk=([0-9a-f]{64})$/m)
             
             if (!pskMatch?.[1]) {
-                throw new Error('Failed to compute PSK hash');
+                throw new Error('Failed to compute PSK hash: '+stdout);
             }
             
             return pskMatch[1];
@@ -147,15 +149,8 @@ class WifiConfigService {
     async updateHostapdConfig(configUpdates) {
         try {
             let config = await this.readHostapdConfig();
-            
-            // Add quotes to string values that need them
-            const quotedUpdates = Object.entries(configUpdates).reduce((acc, [key, val]) => {
-                acc[key] = key === 'channel' ? val : `"${val}"`;
-                return acc;
-            }, {});
-            
-            config = { ...config, ...quotedUpdates };
-            
+            config = { ...config, ...configUpdates};
+
             const configContent = Object.entries(config)
                 .map(([key, value]) => `${key}=${value}`)
                 .join('\n');
