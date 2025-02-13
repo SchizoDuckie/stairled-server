@@ -32,12 +32,13 @@ class Effects {
         app.webServer.get('/partials/:name', (req, res) => this.handlePartials(req, res));
 
         // Effects page route
-        app.webServer.get('/effects', (req, res) => this.handleEffectsPage(req, res));
+        app.webServer.get('/effects', (req, res) => this.handleEffectsPage(req, res, app));
 
         // Animation control routes
         app.webServer.post('/animation/start', (req, res) => this.handleAnimationStart(req, res));
         app.webServer.post('/animation/stop', (req, res) => this.handleAnimationStop(req, res));
-        app.webServer.post('/animation/clear', (req, res) => this.handleAnimationClear(req, res));
+        app.webServer.post('/animation/clear', (req, res) => this.handleAnimationClear(req, res, app));
+
 
         // Configuration routes
         app.webServer.post("/effects/save", (req, res) => this.handleConfigurationSave(req, res));
@@ -90,11 +91,14 @@ class Effects {
      * Handles LED mappings and timeline data
      * @param {Request} req - Express request with optional animation query param
      * @param {Response} res - Express response object
+     * @param {StairledApp} app - Main application instance with webServer and pinMapper
      */
-    async handleEffectsPage(req, res) {
+
+    async handleEffectsPage(req, res, app) {
         // Decode the animation name from URL parameter
         const selectedAnimationName = req.query.animation ? 
             decodeURIComponent(req.query.animation) : 
+
             Array.from(animationService.animations.keys())[0];
         
         const selectedAnimation = animationService.animations.get(selectedAnimationName);
@@ -246,11 +250,14 @@ class Effects {
      * Stops current animation and turns off all LEDs
      * @param {Request} req - Express request object
      * @param {Response} res - Express response object
+     * @param {StairledApp} app - Main application instance with webServer and pinMapper
      */
-    handleAnimationClear(req, res) {
+    handleAnimationClear(req, res, app) {
         try {
             if (this.currentAnimation) {
                 this.currentAnimation.stop();
+
+
                 this.currentAnimation = null;
             }
             // Turn off all LEDs
