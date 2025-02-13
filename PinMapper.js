@@ -32,10 +32,10 @@ class PinMapper {
      * Initializes pin mapping and brightness tracking
      * Prepares I2C communication infrastructure
      */
-    constructor() {
+    constructor(pinmapping = {}) {
         console.log('Initializing PinMapper instance');
         this.drivers = {};
-        this.pinMapping = {};
+        this.pinMapping = pinmapping;
         this.brightnesses = {};
         this.wire = null;
         
@@ -234,7 +234,7 @@ class PinMapper {
      * @param {PCA9685Constructor} PCA9685Class - PCA9685 driver constructor
      * @returns {Promise<PinMapper>} Self reference for chaining
      */
-    async initializeDiscoveredDevices(PCA9685Class) {
+    async initializeDiscoveredDevices(PCA9685Class, storedMapping = {}) {
         console.log('Starting device initialization...');
         try {
             const addresses = await this.discoverDevices();
@@ -252,7 +252,7 @@ class PinMapper {
             });
 
             // Auto-generate initial pin mapping if none exists
-            if (Object.keys(this.pinMapping).length === 0) {
+            if (Object.keys(storedMapping).length === 0) {
                 console.log('No pin mapping exists, generating default mapping');
                 this.generateDefaultPinMapping();
             }
