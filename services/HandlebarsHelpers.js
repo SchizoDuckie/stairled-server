@@ -71,6 +71,17 @@ export class HandlebarsHelpers {
                 return Math.round(((clamped - min) / (max - min)) * 100);
             },
             
+            /**
+             * Calculates Bootstrap column size based on number of drivers
+             * Returns appropriate col-md-* class for responsive grid
+             * @param {number} drivers object
+             * @returns {number} Bootstrap grid column size (4, if > 3, or 6 else)
+             */
+            colSize: (drivers) => {
+                if (Object.keys(drivers).length >= 3) return 4;     
+                return 6;
+            },
+
             toString: (value) => String(value)
         };
     }

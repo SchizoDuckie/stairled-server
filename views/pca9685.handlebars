@@ -20,7 +20,7 @@
 
       <div class="row">
         {{#each drivers as |ports address|}}
-        <div class="col-md-4">
+        <div class="col-12 col-md-{{colSize @root.drivers}}">
             <div class="card shadow pca9685" id="driver_{{address}}" data-driver="{{address}}">
                 <div class="card-header">
                     <div class="row">

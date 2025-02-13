@@ -165,10 +165,14 @@ class SensorConfigCard {
     
     /**
      * Updates chart with new sensor data
+     * Also updates connection status since receiving data implies connection
      * @param {number[]} data - Array of data points to display
      */
     updateChart(data) {
         this.chart.updateChart(data);
+        // Update connection status when receiving data
+        this.updateConnectionStatus(true);
+        this.config.connected = true;
     }
     
     /**
