@@ -70,6 +70,7 @@ class Wifi {
             res.render('wifi', {
                 mode: status.mode,
                 runtimeConfig: {
+                    mode: status.mode,
                     ssid: hostapdConfig.ssid,
                     channel: hostapdConfig.channel || '6',
                     hostname: systemHostname,
@@ -113,22 +114,31 @@ class Wifi {
     async handleApSettings(app, req, res) {
         try {
             const { ssid, password, original_password, channel } = req.body;
-            const finalPassword = password === '********' ? original_password : password;
+            const maskedPassword = '********';
+            let currentConfig = await wifiConfigService.readHostapdConfig();
+
+            if(currentConfig.ssid !== ssid && password === maskedPassword) {
+                return res.status(400).json({
+                    success: false,
+                    error: 'SSID cannot be changed without providing a password for the AP'
+                });
+            }
             
-            const pskHash = await wifiConfigService.computeWpaPsk(ssid, finalPassword);
-            
+            res.json({ success: true });
+            res.end();
+
+
             await wifiConfigService.updateHostapdConfig({
                 ssid: ssid,
-                wpa_passphrase: finalPassword,
-                wpa_psk: pskHash,
+                wpa_psk: await wifiConfigService.computeWpaPsk(ssid, password),
                 channel: channel
             });
             
-            await execAsync('sudo systemctl restart hostapd');
-            res.json({ success: true });
+            execAsync('sudo service hostapd restart');
+            
         } catch (error) {
             console.error('Failed to update AP settings:', error);
-            res.status(500).json({ error: error.message });
+            res.status(500).json({ success: false, error: error.message });
         }
     }
 

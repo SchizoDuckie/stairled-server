@@ -3,14 +3,19 @@
         <h6 class="text-primary m-0">Access Point Configuration</h6>
     </div>
     <div class="card-body">
+        <div class="alert alert-warning" role="alert">
+            <i class="fas fa-exclamation-triangle me-2"></i>
+            If you change the SSID, you will also need to retype your password as the original password is not stored
+        </div>
         <form id="hostapd-form">
             <div class="mb-3">
                 <label for="ap-ssid" class="form-label">SSID</label>
+
                 <input type="text" class="form-control" id="ap-ssid" name="ssid">
             </div>
             <div class="mb-3">
                 <label for="ap-password" class="form-label">Password</label>
-                <input type="password" class="form-control" id="ap-password" name="password">
+                <input type="password" class="form-control" id="ap-password" name="password" minlength="8">
             </div>
             <div class="mb-3">
                 <label for="ap-channel" class="form-label">Channel</label>

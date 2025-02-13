@@ -61,7 +61,7 @@ class APConfigController {
             AlertController.getInstance().showResultModal(
                 result.success, 
                 result.success ? 'AP Settings Updated' : 'Update Failed',
-                result.success ? 'Access point configuration saved' : result.error
+                result.success ? 'Access point configuration saved. Please switch your wifi to the new network!' : result.error
             );
         } catch (error) {
             AlertController.getInstance().showResultModal(
@@ -104,10 +104,3 @@ class APConfigController {
         }
     }
 }
-
-window.addEventListener('DOMContentLoaded', () => {
-    window.apConfigController = new APConfigController({
-        hostname: '{{runtimeConfig.hostname}}',
-        ssid: '{{runtimeConfig.ssid}}'
-    });
-}); 

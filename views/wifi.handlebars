@@ -1,6 +1,4 @@
-<div class="container-fluid wifi-dashboard">
-    {{{clientHelpers}}}
-    
+<div class="container-fluid wifi-dashboard">    
     <!-- Mode Status Banner -->
     <div class="row mb-4">
         <div class="col-12">
@@ -69,10 +67,7 @@
                     </form>
                 </div>
             </div>
-        </div>
 
-        <!-- Additional Network Settings Card -->
-        <div class="col-md-6">
             <div class="card">
                 <div class="card-header">
                     <p class="text-primary text-strong mb-0">
@@ -88,15 +83,12 @@
                                     Note that the hostname change will take effect on reboot
                                 </p>
                             </div>
-
+            
                         </div>
                         <div class="mb-3">
                             <label class="form-label">Device Hostname</label>
-                            <input type="text" class="form-control" 
-                                   name="hostname" 
-                                   value="{{runtimeConfig.hostname}}"
-                                   pattern="[a-zA-Z0-9-]+"
-                                   title="Letters, numbers and hyphens only">
+                            <input type="text" class="form-control" name="hostname" value="{{runtimeConfig.hostname}}"
+                                pattern="[a-zA-Z0-9-]+" title="Letters, numbers and hyphens only">
                         </div>
                         <button type="submit" class="btn btn-outline-success">
                             <i class="fas fa-save me-2"></i>Save Device Hostname
@@ -104,6 +96,11 @@
                     </form>
                 </div>
             </div>
+        </div>
+
+        <!-- Additional Network Settings Card -->
+        <div class="col-md-6">
+            {{> 'discovered-devices' }}
         </div>
     </div>
     {{/if_eq}}
@@ -194,8 +191,24 @@
         </div>
     </div>
 
-    <!-- Rest of the template content -->
-    {{! ... existing network list and modals ... }}
+    <div id="resultModal" class="modal fade" tabindex="-1">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Connection Result</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <div id="resultContent"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    {{> 'connection-status'}}
+
+    <div id="dynamic-modals"></div>
+
 </div>
 
 <head>
@@ -205,10 +218,36 @@
 <script type="text/x-handlebars-template" id="network-item-partial">
     {{{includeRaw 'network-item'}}}
 </script> 
+<script type="text/x-handlebars-template" id="connection-status-partial">
+    
+</script>
+<script type="text/x-handlebars-template" id="connection-error-partial">
+    {{{includeRaw 'connection-error'}}} 
+</script>
+<script type="text/x-handlebars-template" id="connection-steps-partial">
+    {{{includeRaw 'connection-steps'}}}
+</script>
+<script type="text/x-handlebars-template" id="alert-partial">
+    {{{includeRaw 'alert'}}}
+</script>
+<script type="text/x-handlebars-template" id="discovered-devices-partial">  
+    {{{includeRaw 'discovered-devices'}}}
+</script>
 
-<script src="/js/WifiController.js"></script>
+<script src="/js/DiscoveredDevicesController.js"></script>
+<script src="/js/ConnectionController.js"></script>
+<script src="/js/ModeSwitchController.js"></script>
+<script src="/js/APConfigController.js"></script>
+<script src="/js/AlertController.js"></script>
 <script>
+
     document.addEventListener('DOMContentLoaded', () => {
-        new WifiController().initialize();
-    });
+        const config = {{{json runtimeConfig}}};
+        new APConfigController(config);
+        new ModeSwitchController(config).initialize(); 
+        new DiscoveredDevicesController();
+    }); 
+
+
+
 </script>

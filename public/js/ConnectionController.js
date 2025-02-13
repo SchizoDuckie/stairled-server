@@ -50,7 +50,7 @@ class ConnectionController {
         const container = document.getElementById('dynamic-modals');
         container.innerHTML = modalHtml;
         
-        this.modal = new bootstrap.Modal(container.querySelector('#connectionCheckModal'));
+        this.modal = new bootstrap.Modal(document.querySelector('#connectionCheckModal'));
         this.modal.show();
         this.startConnectivityChecks(this.hostname);
     }
@@ -120,7 +120,7 @@ class ConnectionController {
         const container = document.getElementById('dynamic-modals');
         container.innerHTML = modalHtml;
         
-        this.modal = new bootstrap.Modal(container.querySelector('#connectionCheckModal'));
+        this.modal = new bootstrap.Modal(document.querySelector('#connectionCheckModal'));
         this.modal.show();
         this.startCountdown(60);
         this.startConnectivityChecks(this.hostname);

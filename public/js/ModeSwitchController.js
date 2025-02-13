@@ -97,19 +97,6 @@ class ModeSwitchController {
         } else {
             this.modal.hide();
             this.stopPeriodicScanning();
-
-            try {
-                AlertController.getInstance().showResultModal(true,'AP Mode Activated','Device is preparing to reboot...',true);
-                fetch('/wifi/mode', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({
-                        mode: 'AP'
-                    })
-                });                
-            } catch (error) {
-                AlertController.getInstance().showResultModal(false, 'Mode Switch Failed',error.message);
-            }
         }
     }
 
@@ -217,6 +204,7 @@ class ModeSwitchController {
                 throw new Error(result.error || 'Connection failed');
             }
         } catch (error) {
+            console.error(error);
             AlertController.getInstance().showResultModal(
                 false,
                 'Connection Failed',
